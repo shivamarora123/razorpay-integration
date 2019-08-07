@@ -19534,27 +19534,49 @@ module.exports = camelize;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(console) {
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
 
 var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// import "./App.css";
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 
 var App = function (_Component) {
   _inherits(App, _Component);
@@ -19578,36 +19600,34 @@ var App = function (_Component) {
     key: 'paymentHandler',
     value: function paymentHandler(e) {
       e.preventDefault();
-
       var payment_amount = this.state.payment_amount;
 
-      var self = this;
       var options = {
         key: "rzp_test_mwK2pZz9sh8Bc1",
         amount: payment_amount * 100,
         name: 'Payments',
         description: 'Payments',
+        handler: function handler(response) {
+          var paymentId = response.razorpay_payment_id;
+          var url = "http://localhost:3000" + '/api/v1/rzp_capture/' + paymentId + '/' + payment_amount;
+          // Using my server endpoints to capture the payment
+          fetch(url, {
+            method: 'get',
+            headers: {
+              "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+          }).then(function (resp) {
+            return resp.json();
+          }).then(function (data) {
+            console.log('Request succeeded with JSON response', data);
+            self.setState({
+              refund_id: response.razorpay_payment_id
+            });
+          }).catch(function (error) {
+            console.log('Request failed', error);
+          });
+        },
 
-        // handler(response) {
-        //   const paymentId = response.razorpay_payment_id;
-        //   const url = process.env.URL + '/api/v1/rzp_capture/' + paymentId + '/' + payment_amount;
-        //   fetch(url, {
-        //     method: 'get',
-        //     headers: {
-        //       "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-        //     }
-        //   })
-        //     .then(resp => resp.json())
-        //     .then(function (data) {
-        //       console.log('Request succeeded with JSON response', data);
-        //       self.setState({
-        //         refund_id: response.razorpay_payment_id
-        //       });
-        //     })
-        //     .catch(function (error) {
-        //       console.log('Request failed', error);
-        //     });
-        // },
         prefill: {
           name: this.state.name,
           email: this.state.email
@@ -19621,47 +19641,30 @@ var App = function (_Component) {
     value: function render() {
       var _this2 = this;
 
-      var _state = this.state,
-          payment_amount = _state.payment_amount,
-          refund_id = _state.refund_id;
+      var payment_amount = this.state.payment_amount;
 
-      return _react2.default.createElement(
-        'div',
-        { className: 'wrapper' },
-        _react2.default.createElement(
-          'form',
-          { action: '#', onSubmit: this.paymentHandler },
-          _react2.default.createElement('input', {
-            type: 'text',
-            placeholder: 'Full Name',
-            value: this.state.name,
-            onChange: function onChange(e) {
-              return _this2.setState({ name: e.target.value });
-            }
-          }),
-          _react2.default.createElement('input', {
-            type: 'email',
-            placeholder: 'Email Address',
-            value: this.state.email,
-            onChange: function onChange(e) {
-              return _this2.setState({ email: e.target.value });
-            }
-          }),
-          _react2.default.createElement('input', {
-            type: 'number',
-            value: payment_amount,
-            placeholder: 'Amount in INR',
-            onChange: function onChange(e) {
-              return _this2.setState({ payment_amount: e.target.value });
-            }
-          }),
-          _react2.default.createElement(
-            'button',
-            { type: 'submit' },
-            'Pay Now'
-          )
-        )
-      );
+      return _react2.default.createElement('div', { className: 'wrapper' }, _react2.default.createElement('form', { action: '#', onSubmit: this.paymentHandler }, _react2.default.createElement('input', {
+        type: 'text',
+        placeholder: 'Full Name',
+        value: this.state.name,
+        onChange: function onChange(e) {
+          return _this2.setState({ name: e.target.value });
+        }
+      }), _react2.default.createElement('input', {
+        type: 'email',
+        placeholder: 'Email Address',
+        value: this.state.email,
+        onChange: function onChange(e) {
+          return _this2.setState({ email: e.target.value });
+        }
+      }), _react2.default.createElement('input', {
+        type: 'number',
+        value: payment_amount,
+        placeholder: 'Amount in INR',
+        onChange: function onChange(e) {
+          return _this2.setState({ payment_amount: e.target.value });
+        }
+      }), _react2.default.createElement('button', { type: 'submit' }, 'Pay Now')));
     }
   }]);
 
@@ -19669,6 +19672,7 @@ var App = function (_Component) {
 }(_react.Component);
 
 exports.default = App;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ })
 /******/ ]);
